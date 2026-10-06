@@ -31,7 +31,6 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True, trim_whitespace=False)
-
     def validate(self, attrs):
         try:
             user = User.objects.get(username=attrs['username'])

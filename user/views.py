@@ -21,6 +21,7 @@ class JWTLoginView(APIView):
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
+        print(request.data)
         serializer.is_valid(raise_exception=True)
         refresh = RefreshToken.for_user(serializer.validated_data['user'])
         return Response({

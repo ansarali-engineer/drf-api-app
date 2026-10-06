@@ -4,10 +4,12 @@ from user.authentication import CustomJWTAuthentication, CustomTokenAuthenticati
 from .models import Customer
 from rest_framework.authentication import BaseAuthentication, BasicAuthentication,SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.throttling import UserRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .serializer import CustomerSerializer
 from user.permissions import HasRolePermission
+
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
@@ -20,6 +22,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         CustomJWTAuthentication,
     ]
     permission_classes = [IsAuthenticated,HasRolePermission]
+    throttle_classes = [UserRateThrottle]
     permission_screen = "customers"
     filter_backend = [DjangoFilterBackend,SearchFilter,OrderingFilter]
         

@@ -118,3 +118,25 @@ class LoginTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.data['token'])
         self.assertTrue(UserToken.objects.filter(user=self.user).exists())
+
+    def test_swagger_documents_login_credentials(self):
+        response = self.client.get('/swagger.json')
+
+        self.assertEqual(response.status_code, 200)
+        schema = response.data
+
+        for path in ('/login/', '/token/', '/api-token-auth/'):
+            with self.subTest(path=path):
+                parameters = schema['paths'][path]['post']['parameters']
+                body_parameter = next(
+                    parameter
+                    for parameter in parameters
+                    if parameter['in'] == 'body'
+                )
+                login_schema = schema['definitions'][
+                    body_parameter['schema']['$ref'].rsplit('/', 1)[-1]
+                ]
+                self.assertEqual(
+                    set(login_schema['properties']),
+                    {'username', 'password'},
+                )

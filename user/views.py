@@ -1,7 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -34,6 +34,7 @@ class JWTLoginView(APIView):
 
 class JWTTokenRefreshView(TokenRefreshView):
     serializer_class = CustomTokenRefreshSerializer
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(security=[])
     def post(self, request, *args, **kwargs):
@@ -55,6 +56,7 @@ class LoginView(APIView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
     filter_backend = [DjangoFilterBackend,SearchFilter,OrderingFilter]
         
@@ -63,3 +65,8 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields = ['username','email','first_name','last_name',]
 
     ordering_fields = ['created_at','username',]
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [AllowAny()]
+        return super().get_permissions()

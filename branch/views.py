@@ -11,10 +11,10 @@ from config.utils import success_response, error_response
 
 class BranchView(APIView):
     authentication_classes = [
+        CustomJWTAuthentication,
+        CustomTokenAuthentication,
         SessionAuthentication,
         BasicAuthentication,
-        CustomTokenAuthentication,
-        CustomJWTAuthentication,
     ]
     permission_classes = [IsAuthenticated]
     def get(self, request):
@@ -63,9 +63,9 @@ class BranchView(APIView):
 
 class BranchDetailView(APIView):
     authentication_classes = [
+        CustomJWTAuthentication,
         SessionAuthentication,
         BasicAuthentication,
-        CustomJWTAuthentication,
     ]
     permission_classes = [IsAuthenticated]
     def get(self, request, id):

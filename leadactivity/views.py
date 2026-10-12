@@ -14,10 +14,10 @@ from .models import LeadActivity
 
 class LeadActivityViewSet(viewsets.ModelViewSet):
     authentication_classes = [
+        CustomJWTAuthentication,
+        CustomTokenAuthentication,
         BasicAuthentication,
         SessionAuthentication,
-        CustomTokenAuthentication,
-        CustomJWTAuthentication,
     ]
     permission_classes = [IsAuthenticated]
     queryset = LeadActivity.objects.all()

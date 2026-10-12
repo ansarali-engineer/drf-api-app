@@ -8,10 +8,10 @@ from .serializer import RoleSerializer,RolePermissionsSerializer
 
 class RoleViewSet(viewsets.ModelViewSet):
     authentication_classes = [
+        CustomJWTAuthentication,
+        CustomTokenAuthentication,
         SessionAuthentication,
         BasicAuthentication,
-        CustomTokenAuthentication,
-        CustomJWTAuthentication,
     ]
     permission_classes = [IsAuthenticated]
     queryset = Role.objects.all()

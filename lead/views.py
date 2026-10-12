@@ -9,10 +9,10 @@ from .serializer import LeadSerializer
 
 class LeadViewSet(viewsets.ModelViewSet):
     authentication_classes = [
+        CustomJWTAuthentication,
+        CustomTokenAuthentication,
         SessionAuthentication,
         BasicAuthentication,
-        CustomTokenAuthentication,
-        CustomJWTAuthentication,
     ]
     permission_classes = [IsAuthenticated]
     queryset = Lead.objects.all().order_by('-id')

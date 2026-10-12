@@ -16,10 +16,10 @@ class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     authentication_classes = [
+        CustomJWTAuthentication,
+        CustomTokenAuthentication,
         SessionAuthentication,
         BasicAuthentication,
-        CustomTokenAuthentication,
-        CustomJWTAuthentication,
     ]
     permission_classes = [IsAuthenticated,HasRolePermission]
     throttle_classes = [UserRateThrottle]

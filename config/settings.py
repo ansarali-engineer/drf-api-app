@@ -18,6 +18,9 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 ALLOWED_HOSTS = ["*"]
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.PageNumberPagination',
 
@@ -29,10 +32,10 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter',
     ],
  'DEFAULT_AUTHENTICATION_CLASSES': [
+        'user.authentication.CustomJWTAuthentication',
+        'user.authentication.CustomTokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'user.authentication.CustomTokenAuthentication',
-        'user.authentication.CustomJWTAuthentication',
     ],
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',

@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.contrib.auth.hashers import check_password, make_password
 from rest_framework.test import APIClient
+from rest_framework_simplejwt.tokens import RefreshToken
 
-from Role.models import Role
+from Role.models import Role, RolePermission
 from branch.models import Branch
 from .models import User, UserToken
 from .serializer import LoginSerializer
@@ -167,3 +168,44 @@ class LoginTests(TestCase):
                     schema['paths'][path]['post']['security'],
                     [],
                 )
+
+    def test_protected_api_collections_reject_anonymous_requests(self):
+        protected_paths = (
+            '/api/branches/',
+            '/api/roles/',
+            '/api/rolespermissions/',
+            '/api/customers/',
+            '/api/leads/',
+            '/api/leadactivities/',
+            '/api/users/',
+        )
+
+        for path in protected_paths:
+            with self.subTest(path=path):
+                response = self.client.get(path)
+                self.assertEqual(response.status_code, 401)
+
+    def test_jwt_authenticates_all_protected_api_collections(self):
+        RolePermission.objects.create(
+            role=self.role,
+            screen_name='customers',
+            can_view=True,
+        )
+        access_token = str(RefreshToken.for_user(self.user).access_token)
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {access_token}'
+        )
+        protected_paths = (
+            '/api/branches/',
+            '/api/roles/',
+            '/api/rolespermissions/',
+            '/api/customers/',
+            '/api/leads/',
+            '/api/leadactivities/',
+            '/api/users/',
+        )
+
+        for path in protected_paths:
+            with self.subTest(path=path):
+                response = self.client.get(path)
+                self.assertEqual(response.status_code, 200, response.data)

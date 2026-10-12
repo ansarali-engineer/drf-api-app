@@ -44,6 +44,19 @@ REST_FRAMEWORK = {
         'customer': '5/minute',
     }
 }
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'Authorization header scheme: Bearer. Append the access token after the scheme.',
+        },
+    },
+    'SECURITY_REQUIREMENTS': [{'Bearer': []}],
+}
+
 # Application definition
 
 INSTALLED_APPS = [

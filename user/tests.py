@@ -140,3 +140,30 @@ class LoginTests(TestCase):
                     set(login_schema['properties']),
                     {'username', 'password'},
                 )
+
+    def test_swagger_authorizes_protected_endpoints_with_jwt(self):
+        response = self.client.get('/swagger.json')
+
+        self.assertEqual(response.status_code, 200)
+        schema = response.data
+        self.assertEqual(
+            schema['securityDefinitions']['Bearer'],
+            {
+                'type': 'apiKey',
+                'name': 'Authorization',
+                'in': 'header',
+                'description': 'Authorization header scheme: Bearer. Append the access token after the scheme.',
+            },
+        )
+        self.assertEqual(schema['security'], [{'Bearer': []}])
+        self.assertEqual(
+            schema['paths']['/branches/']['get'].get('security'),
+            None,
+        )
+
+        for path in ('/login/', '/token/', '/token/refresh/', '/api-token-auth/'):
+            with self.subTest(path=path):
+                self.assertEqual(
+                    schema['paths'][path]['post']['security'],
+                    [],
+                )

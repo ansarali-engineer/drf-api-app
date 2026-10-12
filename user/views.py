@@ -20,7 +20,7 @@ class JWTLoginView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
 
-    @swagger_auto_schema(request_body=LoginSerializer)
+    @swagger_auto_schema(request_body=LoginSerializer, security=[])
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         print(request.data)
@@ -35,12 +35,16 @@ class JWTLoginView(APIView):
 class JWTTokenRefreshView(TokenRefreshView):
     serializer_class = CustomTokenRefreshSerializer
 
+    @swagger_auto_schema(security=[])
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
 
 class LoginView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
 
-    @swagger_auto_schema(request_body=LoginSerializer)
+    @swagger_auto_schema(request_body=LoginSerializer, security=[])
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
